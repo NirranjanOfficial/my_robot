@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<!--URDF stands for Unified Robot Description format-->
+<robot name="my_robot">
+
+
+<!--in TF R is x-axis G is y-axis B is z-axis-->
+
+
+<!--Here we have created multiple color codes which can be used later..similar to preamble--> 
+    <material name="grey">
+        <color rgba="0.7 0.7 0.7 1"/>  
+    </material>
+    
+    <material name="green">
+        <color rgba="0 0.6 0 1"/>
+    </material>
+
+    <material name="white">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+<!--Here we are going to create multiple links with geomentry for the cart-->
+
+    <link name="base_footprint"/> <!--ut doesnt have any visuals, so i have ended in the same tag-->
+
+    <link name="base_link">  <!--Links are the rigid parts oin the URDF-->   
+        <visual>
+            <geometry>
+                <box size="0.6 0.4 0.2" />
+            </geometry>
+            <origin xyz="0 0 0.1" rpy="0 0 0" />
+            <material name="grey"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.6 0.4 0.2" />
+            </geometry>
+            <origin xyz="0 0 0.1" rpy="0 0 0" /> 
+        </collision>
+
+    </link>
+
+    <link name="lidar_link">     <!--Top lidar part-->
+        <visual>
+            <geometry>
+                <cylinder radius="0.1" length="0.05"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <material name="white"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.2 0.2 0.05" />
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </collision>
+
+    </link>
+
+    <link name="Left_wheel">    <!--Left wheel-->
+        <visual> 
+            <geometry>
+                <cylinder radius="0.1" length="0.05"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="1.57 0 0"/>   <!--in general we dont mention values in degrees we use radians-->  <!--Tilted for 90 deg-->
+            <material name="grey"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <cylinder radius="0.1" length="0.05"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="1.57 0 0"/>
+        </collision>
+
+    </link>
+
+    <link name="Right_wheel">    <!--Right wheel-->
+        <visual> 
+            <geometry>
+                <cylinder radius="0.1" length="0.05"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="1.57 0 0"/>   <!--in general we dont mention values in degrees we use radians-->
+            <material name="grey"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <cylinder radius="0.1" length="0.05"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="1.57 0 0"/>
+        </collision>
+
+    </link>
+
+   <link name="Caster_wheel">
+        <visual>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <origin xyz="0.20 0 -0.05" rpy="0 0 0"/>
+            <material name="grey"/>
+        </visual>
+        
+        <collision>
+        <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <origin xyz="0.20 0 -0.05" rpy="0 0 0"/>            
+        </collision>
+    </link>
+
+<!--Lets create joints to conect those links together-->
+
+    <joint name="base_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="base_lidar_joint" type="fixed"> <!--Joint is an transfer used to create heirarchy between links-->
+        <parent link="base_link"/>
+        <child link="lidar_link"/>
+        <origin xyz="0 0 0.225" rpy="0 0 0"/>
+    </joint>
+
+
+    <joint name="Left_wheel_link" type="continuous">
+        <parent link="base_link"/>
+        <child link="Left_wheel"/>
+        <origin xyz="-0.15 0.225 0" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+
+    <joint name="Right_wheel_link" type="continuous">
+        <parent link="base_link"/>
+        <child link="Right_wheel"/>
+        <origin xyz="-0.15 -0.225 0" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    
+    <joint name="Caster_wheel_link" type="fixed">
+        <parent link="base_link"/>
+        <child link="Caster_wheel"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+</robot>
+
+<!--ros2 run tf2_tools view_frames-->
+
+<!--ros2 launch urdf_tutorial display.launch.py model:=/home/hirako/ros2_ws/src/trial_pieces/my_robot.urdf-->
